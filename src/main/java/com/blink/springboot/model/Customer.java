@@ -4,8 +4,12 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,13 +39,15 @@ public class Customer {
 	private String names;
 	@Column(name = "lastnames")
 	private String lastNames;
+	@Enumerated(EnumType.STRING)
 	private Sex sex;
 	@Type(type = "jsonb")
     @Column(columnDefinition = "json") 
 	private List<Specs> specs;
-	@Transient
+	@ElementCollection
+	@CollectionTable(name="childs")
 	private List<Customer> childs;
-
+	
 
 	public Customer() {
 	}
@@ -111,5 +117,6 @@ public class Customer {
 		this.lastNames = lastNames;
 		return this;
 	}
+	
 
 }
