@@ -1,25 +1,18 @@
 package com.blink.springboot.controller;
 
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.*;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 
 import com.blink.springboot.model.Customer;
 import com.blink.springboot.model.CustomerRepository;
@@ -32,22 +25,34 @@ public class CustomerController {
 	@Autowired
 	private CustomerRepository customerRepository;
 	
-	@GetMapping("/customer/all")
-	public List<Customer> getAll(){
-		return customerRepository.findAll();
-	}		
 	
 	@PostMapping("/customer")
 	public Customer create(@RequestBody Customer customer) {
 		return customerRepository.save(customer);
 	}
 
+
+		
+	@RequestMapping(path = "/customer/all", method = RequestMethod.GET)
+	public Page<Customer> getAll(@RequestParam(required = false) Optional<Integer> page,
+			 				  @RequestParam(required = false) Optional<Integer> size) {
+		
+	
+		
+		return customerRepository.findAll(PageRequest.of( 
+										page.orElse(0), 
+										size.orElse(50),
+										Sort.by("lastNames", "names" )));
+
+		
+	}
+
 	@GetMapping("/customer/")
-	public List<Customer> getByLastName(@RequestParam(required = false)  String lastNames, 
-										@RequestParam(required = false) String names,
-										@RequestParam(required = false) Sex sex,
-										@RequestParam(required = false) Optional<Integer> ageFrom,
-										@RequestParam(required = false) Optional<Integer> ageTo) {
+	public List<Customer> get(@RequestParam(required = false)  String lastNames, 
+							  @RequestParam(required = false) String names,
+							  @RequestParam(required = false) Sex sex,
+							  @RequestParam(required = false) Optional<Integer> ageFrom,
+							  @RequestParam(required = false) Optional<Integer> ageTo) {
 		
 		Customer customerQuery = new Customer()
 				.setLastNames(lastNames)
@@ -55,18 +60,21 @@ public class CustomerController {
 				.setSex(sex);
 		
 		Example<Customer> example = Example.of(customerQuery, 
-									ExampleMatcher.matching()
-										.withIgnoreCase(true)
-										.withStringMatcher(StringMatcher.CONTAINING));
+										ExampleMatcher.matching()
+											.withIgnoreCase(true)
+											.withStringMatcher(StringMatcher.CONTAINING));
 			
+		List<Customer> customers = customerRepository.findAll(
+													example, 
+													Sort.by("lastNames", "names"));
 		
-		List<Customer> customers = customerRepository.findAll(example)
-				.stream().filter(customer -> 
-										customer.getAge() >= ageFrom.orElse(0)
-										&& 	customer.getAge() <= ageTo.orElse(Integer.MAX_VALUE))
-				.collect(Collectors.toList());
+		customers = customers.stream().filter(customer -> Range.closed(ageFrom.orElse(0),
+																       ageTo.orElse(Integer.MAX_VALUE))
+														       .contains(customer.getAge()))
+										.collect(Collectors.toList());
 		
 		return customers;
+		
 	}
 
 	@GetMapping("/customer/{id}")
@@ -95,4 +103,11 @@ public class CustomerController {
 		customerRepository.delete(customer);
 		return ResponseEntity.ok(customer);
 	}
+	
+	@GetMapping("/customer/sex")
+	public List<Customer> getBySex(@RequestParam Set<Sex> sexs) {
+		
+		return customerRepository.findBySex(sexs);
+	}
+	
 }

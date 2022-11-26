@@ -1,9 +1,17 @@
 package com.blink.springboot.model;
 
-import java.util.List; 
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Set; 
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-	List<Customer> findByLastNamesLikeIgnoreCase(String lastname);
+	
+	@Query("SELECT c "
+		+ "FROM Customer c "
+		+ "WHERE sex in :sexs ")
+	List<Customer> findBySex(Set<Sex> sexs);
+
 }
