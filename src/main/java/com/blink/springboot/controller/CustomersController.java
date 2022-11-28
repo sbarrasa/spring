@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import com.blink.springboot.model.Customer;
-import com.blink.springboot.model.CustomerRepository;
+import com.blink.springboot.model.CustomersRepository;
 import com.blink.springboot.model.Sex;
 
 @RestController
@@ -22,14 +22,10 @@ import com.blink.springboot.model.Sex;
 public class CustomersController {
 
 	@Autowired
-	private CustomerRepository customerRepository;
+	private CustomersRepository customerRepository;
 	
 	
-	@PostMapping("/")
-	public Customer create(@RequestBody Customer customer) {
-		return customerRepository.save(customer);
-	}
-
+	
 
 		
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
@@ -83,15 +79,16 @@ public class CustomersController {
 		return ResponseEntity.ok(customer);
 	}
 	
-	
+
+	@PostMapping("/")
+	public Customer create(@RequestBody Customer customer) {
+		return customerRepository.save(customer);
+	}
+
 	@PutMapping("/{id}")
-	public ResponseEntity<Customer> update(@PathVariable Long id, @RequestBody Customer customerUpdate){
-		Optional<Customer> customer = customerRepository.findById(id);
-		
-		if(customer.isEmpty()) 
-			return ResponseEntity.ok(create(customerUpdate));
-		
-		return ResponseEntity.ok(customerRepository.save(customerUpdate));
+	public Customer update(@PathVariable Long id, @RequestBody Customer customerUpdate){
+		customerUpdate.setId(id);
+		return customerRepository.save(customerUpdate);
 	}
 	
 	@DeleteMapping("/{id}")

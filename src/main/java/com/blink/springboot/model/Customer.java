@@ -33,7 +33,7 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType;
 public class Customer {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "customer_sequence")
 	private Long id;
 	private LocalDate birthday;
 	private String names;
