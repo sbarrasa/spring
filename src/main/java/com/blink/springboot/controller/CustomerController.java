@@ -1,7 +1,6 @@
 package com.blink.springboot.controller;
 
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -106,7 +105,6 @@ public class CustomerController {
 	
 	@GetMapping("/customer/sex")
 	public List<Customer> getBySex(@RequestParam Set<Sex> sexs) {
-		
 		return customerRepository.findBySex(sexs);
 	}
 	

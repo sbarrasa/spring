@@ -28,8 +28,8 @@ public class SwaggerConfig implements WebMvcConfigurer{
 
     private ApiInfo apiInfoMetaData() {
 
-        return new ApiInfoBuilder().title("CRUD")
-                .description("En ejemplo de CRUD simple usando spring")
+        return new ApiInfoBuilder().title("CRUD via REST")
+                .description("Un ejemplo de CRUD simple usando spring")
                 .contact(new Contact("Sebastián Barrasa", "https://www.cruzagramas.com.ar", "sebastian.barrasa@blink-srl.com"))
                 .license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
