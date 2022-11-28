@@ -11,9 +11,9 @@ import javax.persistence.Table;
 @Table(name = "products")
 public class Product {
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator = "product_sequence")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	private String name;
+	private String name; 
 	private String description;
 	private Integer stock;
 	private Double price;

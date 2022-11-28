@@ -22,19 +22,16 @@ import com.blink.springboot.model.Sex;
 public class CustomersController {
 
 	@Autowired
-	private CustomersRepository customerRepository;
+	private CustomersRepository customersRepository;
 	
-	
-	
-
-		
+			
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
 	public Page<Customer> getAll(@RequestParam(required = false) Optional<Integer> page,
 			 				  @RequestParam(required = false) Optional<Integer> size) {
 		
 	
 		
-		return customerRepository.findAll(PageRequest.of( 
+		return customersRepository.findAll(PageRequest.of( 
 										page.orElse(0), 
 										size.orElse(50),
 										Sort.by("lastNames", "names" )));
@@ -59,7 +56,7 @@ public class CustomersController {
 											.withIgnoreCase(true)
 											.withStringMatcher(StringMatcher.CONTAINING));
 			
-		List<Customer> customers = customerRepository.findAll(
+		List<Customer> customers = customersRepository.findAll(
 													example, 
 													Sort.by("lastNames", "names"));
 		
@@ -74,7 +71,7 @@ public class CustomersController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Customer> getById(@PathVariable Long id) {
-		Customer customer = customerRepository.findById(id)
+		Customer customer = customersRepository.findById(id)
 				.orElseThrow();
 		return ResponseEntity.ok(customer);
 	}
@@ -82,27 +79,27 @@ public class CustomersController {
 
 	@PostMapping("/")
 	public Customer create(@RequestBody Customer customer) {
-		return customerRepository.save(customer);
+		return customersRepository.save(customer);
 	}
 
 	@PutMapping("/{id}")
 	public Customer update(@PathVariable Long id, @RequestBody Customer customerUpdate){
 		customerUpdate.setId(id);
-		return customerRepository.save(customerUpdate);
+		return customersRepository.save(customerUpdate);
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Customer> delete(@PathVariable Long id){
-		Customer customer = customerRepository.findById(id)
+		Customer customer = customersRepository.findById(id)
 				.orElseThrow();
 		
-		customerRepository.delete(customer);
+		customersRepository.delete(customer);
 		return ResponseEntity.ok(customer);
 	}
 	
 	@GetMapping("/sex")
 	public List<Customer> getBySex(@RequestParam Set<Sex> sexs) {
-		return customerRepository.findBySex(sexs);
+		return customersRepository.findBySex(sexs);
 	}
 	
 }
