@@ -46,10 +46,10 @@ public class CustomersController {
 							  @RequestParam(required = false) Optional<Integer> ageFrom,
 							  @RequestParam(required = false) Optional<Integer> ageTo) {
 		
-		Customer customerQuery = new Customer()
-				.setLastNames(lastNames)
-				.setNames(names)
-				.setSex(sex);
+		Customer customerQuery = new Customer();
+		customerQuery.setLastNames(lastNames);
+		customerQuery.setNames(names);
+		customerQuery.setSex(sex);
 		
 		Example<Customer> example = Example.of(customerQuery, 
 										ExampleMatcher.matching()

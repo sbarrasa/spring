@@ -8,8 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,7 +25,7 @@ public class Order {
 	
 	@ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
 	private Customer customer;
-	@OneToMany(targetEntity = Product.class)
+	@ManyToMany(targetEntity = Product.class)
 	private Set<Product> products;
 
 	@CreationTimestamp
@@ -37,7 +37,7 @@ public class Order {
     public Order() {}
 
     public Order(Customer customer, Set<Product> products) {
-    	this.customer = customer;
+    	setCustomer(customer);
     	this.products = products;
     }
     
@@ -45,12 +45,17 @@ public class Order {
 		return products.size();
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public CustomerSimple getCustomer() {
+		return new CustomerSimple(customer);
 	}
+	
+	
+	
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+		
 	}
+	
 	public Set<Product> getProduct() {
 		return products;
 	}

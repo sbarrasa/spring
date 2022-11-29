@@ -43,9 +43,9 @@ public class OrdersController {
 
 	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Order> getById(@PathVariable Long id) {
-		Order customer = ordersRepository.findById(id)
+		Order order = ordersRepository.findById(id)
 				.orElseThrow();
-		return ResponseEntity.ok(customer);
+		return ResponseEntity.ok(order);
 	}
 	
 	@RequestMapping(path = "/", method = RequestMethod.POST)

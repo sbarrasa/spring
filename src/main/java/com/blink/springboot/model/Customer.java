@@ -14,13 +14,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 
@@ -31,16 +29,16 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType;
     @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 public class Customer {
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	private LocalDate birthday;
 	private String names;
 	@Column(name = "lastnames")
 	private String lastNames;
 	@Enumerated(EnumType.STRING)
 	private Sex sex;
+	
+	private LocalDate birthday;
 	@Type(type = "jsonb")
     @Column(columnDefinition = "json") 
 	private List<Specs> specs;
@@ -49,18 +47,36 @@ public class Customer {
 	private List<Customer> childs;
 	
 
-	public Customer() {	}
+	public Customer() {}
+
 	
 	public Customer(Long id) {	
 		this.id = id;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public String getNames() {
+		return names;
+	}
+	public void setNames(String names) {
+		this.names = names;
+	}
+	public String getLastNames() {
+		return lastNames;
+	}
+	public void setLastNames(String lastNames) {
+		this.lastNames = lastNames;
+	}
+	public Sex getSex() {
+		return sex;
+	}
+	public void setSex(Sex sex) {
+		this.sex = sex;
 	}
 
 	public LocalDate getBirthday() {
@@ -71,14 +87,6 @@ public class Customer {
 		this.birthday = birthday;
 	}
 
-	public String getNames() {
-		return names;
-	}
-
-	public Customer setNames(String names) {
-		this.names = names;
-		return this;
-	}
 
 
 
@@ -86,14 +94,6 @@ public class Customer {
 		return Period.between(birthday, LocalDate.now()).getYears();
 	}
 
-	public Sex getSex() {
-		return sex;
-	}
-
-	public Customer setSex(Sex sex) {
-		this.sex = sex;
-		return this;
-	}
 
 	public List<Customer> getChilds() {
 		return childs;
@@ -112,14 +112,6 @@ public class Customer {
 		this.specs = specs;
 	}
 
-	public String getLastNames() {
-		return lastNames;
-	}
-
-	public Customer setLastNames(String lastNames) {
-		this.lastNames = lastNames;
-		return this;
-	}
 	
 
 }
