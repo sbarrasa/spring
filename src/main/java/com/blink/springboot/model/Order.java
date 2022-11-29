@@ -1,16 +1,24 @@
 package com.blink.springboot.model;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -25,8 +33,9 @@ public class Order {
 	
 	@ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
 	private Customer customer;
-	@ManyToMany(targetEntity = Product.class)
-	private Set<Product> products;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+	private Set<ProductOrdered> products = new HashSet<>();
 
 	@CreationTimestamp
     private LocalDateTime created;
@@ -36,9 +45,9 @@ public class Order {
 
     public Order() {}
 
-    public Order(Customer customer, Set<Product> products) {
+    public Order(Customer customer, Set<ProductOrdered> products) {
     	setCustomer(customer);
-    	this.products = products;
+    	setProducts(products);
     }
     
 	public Integer getCnt() {
@@ -56,15 +65,9 @@ public class Order {
 		
 	}
 	
-	public Set<Product> getProduct() {
-		return products;
-	}
-	public void setProduct(Set<Product> product) {
-		this.products = product;
-	}
 
-	public Double getTotalPrice() {
-		return products.stream().mapToDouble(product -> product.getPrice()).sum();
+	public Double getTotalPrice() { 
+		return products.stream().mapToDouble(product -> product.getPrice()).sum() ;
 	}
 	
 	public Long getId() {
@@ -74,12 +77,12 @@ public class Order {
 		this.id = id;
 	}
 
-	public Set<Product> getProducts() {
+	public Set<ProductOrdered> getProducts() {
 		return products;
 	}
 
-	public void setProducts(Set<Product> products) {
-		this.products = products;
+	public void setProducts(Set<ProductOrdered> productsOrdered) {
+		this.products = productsOrdered;
 	}
 
 	public LocalDateTime getCreated() {

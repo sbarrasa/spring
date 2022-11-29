@@ -13,7 +13,7 @@ import com.blink.springboot.model.Customer;
 import com.blink.springboot.model.CustomersRepository;
 import com.blink.springboot.model.Order;
 import com.blink.springboot.model.OrdersRepository;
-import com.blink.springboot.model.Product;
+import com.blink.springboot.model.ProductOrdered;
 import com.blink.springboot.model.ProductsRepository;
 
 @RestController
@@ -50,11 +50,10 @@ public class OrdersController {
 	
 	@RequestMapping(path = "/", method = RequestMethod.POST)
 	public Order create(@RequestParam Long customer_id,
-						@RequestBody Set<Long> product_ids ) {
+						@RequestBody Set<ProductOrdered> products ) {
 		Customer customer = customersRepository.findById(customer_id)
 				.orElseThrow(() -> new OrdersError(new Customer(customer_id)));
 		
-		Set<Product> products = productsRepository.findByIds(product_ids);
 		
 		Order order = new Order(customer, products);
 		
