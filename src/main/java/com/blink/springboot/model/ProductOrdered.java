@@ -6,23 +6,33 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 
 
 @Entity
 @Table(name = "orders_products")
-@IdClass(ProductOrdered.class)
 public class ProductOrdered implements Serializable{
-	@Id
-	@Column(name = "order_id")
-	private Long orderId;
-	
 
+	@Id
+    @ManyToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id", insertable = true, updatable =true)
+	private Order order;
+
+	@JsonBackReference
+	public Order getOrder() {
+		return order;
+	}
+
+	@JsonBackReference
+	public void setOrder(Order order) {
+		this.order = order;
+	}
 
 	@Id
 	@Column(name = "product_id")
@@ -53,6 +63,7 @@ public class ProductOrdered implements Serializable{
 	public void setCnt(Integer cnt) {
 		this.cnt = cnt;
 	}
+
 
 
 	

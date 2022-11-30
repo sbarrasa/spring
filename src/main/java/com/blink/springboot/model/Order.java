@@ -30,13 +30,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "orders")
 public class Order {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator="order_seq")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
+	@ManyToOne
 	private Customer customer;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "orderId", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.PERSIST)
 	private Set<ProductOrdered> productsOrdered ;
 
 	@CreationTimestamp
@@ -86,6 +86,7 @@ public class Order {
 
 	public void setProductsOrdered(Set<ProductOrdered> productsOrdered) {
 		this.productsOrdered = productsOrdered;
+		productsOrdered.forEach(p -> p.setOrder(this));
 	}
 
 	public LocalDateTime getCreated() {

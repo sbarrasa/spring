@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +55,7 @@ public class OrdersController {
 	}
 	
 	@RequestMapping(path = "/", method = RequestMethod.POST)
+	@Transactional
 	public Order create(@RequestParam Long customer_id,
 						@RequestBody Set<ProductOrdered> productsOrdered ) {
 		
@@ -92,6 +95,7 @@ public class OrdersController {
 	}
 
 	@RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+	@Transactional
 	public Order update(@PathVariable Long id, @RequestBody Order orderUpdate){
 		orderUpdate.setId(id);
 		return ordersRepository.save(orderUpdate);
