@@ -35,7 +35,7 @@ public class Order {
 	private Customer customer;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
-	private Set<ProductOrdered> products = new HashSet<>();
+	private Set<ProductOrdered> productsOrdered = new HashSet<>();
 
 	@CreationTimestamp
     private LocalDateTime created;
@@ -45,14 +45,11 @@ public class Order {
 
     public Order() {}
 
-    public Order(Customer customer, Set<ProductOrdered> products) {
+    public Order(Customer customer, Set<ProductOrdered> productsOrdered) {
     	setCustomer(customer);
-    	setProducts(products);
+    	setProductsOrdered(productsOrdered);
     }
     
-	public Integer getCnt() {
-		return products.size();
-	}
 
 	public CustomerSimple getCustomer() {
 		return new CustomerSimple(customer);
@@ -66,8 +63,12 @@ public class Order {
 	}
 	
 
+	public Integer getCntItems() {
+		return productsOrdered.stream().mapToInt(product -> product.getCnt()).sum();
+	}
+
 	public Double getTotalPrice() { 
-		return products.stream().mapToDouble(product -> product.getPrice()).sum() ;
+		return productsOrdered.stream().mapToDouble(product -> product.getPrice()* product.getCnt()).sum() ;
 	}
 	
 	public Long getId() {
@@ -77,12 +78,12 @@ public class Order {
 		this.id = id;
 	}
 
-	public Set<ProductOrdered> getProducts() {
-		return products;
+	public Set<ProductOrdered> getProductsOrdered() {
+		return productsOrdered;
 	}
 
-	public void setProducts(Set<ProductOrdered> productsOrdered) {
-		this.products = productsOrdered;
+	public void setProductsOrdered(Set<ProductOrdered> productsOrdered) {
+		this.productsOrdered = productsOrdered;
 	}
 
 	public LocalDateTime getCreated() {

@@ -50,12 +50,14 @@ public class OrdersController {
 	
 	@RequestMapping(path = "/", method = RequestMethod.POST)
 	public Order create(@RequestParam Long customer_id,
-						@RequestBody Set<ProductOrdered> products ) {
+						@RequestBody Set<ProductOrdered> productsOrdered ) {
+		
 		Customer customer = customersRepository.findById(customer_id)
 				.orElseThrow(() -> new OrdersError(new Customer(customer_id)));
 		
 		
-		Order order = new Order(customer, products);
+		
+		Order order = new Order(customer, productsOrdered);
 		
 		return ordersRepository.save(order);
 	}
