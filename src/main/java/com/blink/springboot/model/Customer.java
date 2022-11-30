@@ -50,10 +50,6 @@ public class Customer {
 	public Customer() {}
 
 	
-	public Customer(Long id) {	
-		this.id = id;
-	}
-
 	public Long getId() {
 		return id;
 	}

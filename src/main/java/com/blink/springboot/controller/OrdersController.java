@@ -1,8 +1,11 @@
 package com.blink.springboot.controller;
 
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -13,6 +16,7 @@ import com.blink.springboot.model.Customer;
 import com.blink.springboot.model.CustomersRepository;
 import com.blink.springboot.model.Order;
 import com.blink.springboot.model.OrdersRepository;
+import com.blink.springboot.model.Product;
 import com.blink.springboot.model.ProductOrdered;
 import com.blink.springboot.model.ProductsRepository;
 
@@ -53,13 +57,38 @@ public class OrdersController {
 						@RequestBody Set<ProductOrdered> productsOrdered ) {
 		
 		Customer customer = customersRepository.findById(customer_id)
-				.orElseThrow(() -> new OrdersError(new Customer(customer_id)));
+				.orElseThrow(() -> new OrdersError(Customer.class, customer_id));
 		
+		Set<Long> productIDs =  productsOrdered.stream()
+										.map(p-> p.getProductId())
+										.collect(Collectors.toSet());
+				
+		List<Product> products = productsRepository.findAllById(productIDs);
+		
+		productsOrdered.forEach(po -> {
+			Product product = products.stream()
+					.filter( p -> p.getId().equals(po.getProductId()))
+					.findFirst().orElseThrow(() -> new OrdersError(Product.class, po.getProductId())); 
+
+			if(po.getCnt() > product.getStock())
+				throw new OrdersError(String.format("There are no suficient stock for product.id: %d (max: %d)",
+										product.getId(),
+										product.getStock())
+									 );
+
+			
+			product.setStock(product.getStock()-po.getCnt());
+			
+		});
 		
 		
 		Order order = new Order(customer, productsOrdered);
 		
+		productsRepository.saveAll(products);
+		
+		
 		return ordersRepository.save(order);
+		
 	}
 
 	@RequestMapping(path = "/{id}", method = RequestMethod.PUT)

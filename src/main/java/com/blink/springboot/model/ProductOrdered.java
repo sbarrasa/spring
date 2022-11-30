@@ -3,15 +3,14 @@ package com.blink.springboot.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 
@@ -20,33 +19,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @IdClass(ProductOrdered.class)
 public class ProductOrdered implements Serializable{
 	@Id
-	@ManyToOne
-	@JoinColumn(name = "order_id", referencedColumnName = "id", insertable = false, updatable =false)
-	private Order order;
+	@Column(name = "order_id")
+	private Long orderId;
 	
+
+
 	@Id
-    @OneToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-	private Product product;
-	
-	@JsonIgnore
-	public void setProduct(Product product) {
-		this.product = product;
-	}
+	@Column(name = "product_id")
+	private Long productId;
 	
 	
-	public Product getProduct() {
-		if(product == null)
-			product = new Product(); 
-		return product;
-	}
-	
-	public void setProductId(Long product_id) {
-		getProduct().setId(product_id);
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 	
 	public Long getProductId() {
-		return getProduct().getId();
+		return productId;
 	}
 	
 	private Double price = null;
@@ -65,6 +53,7 @@ public class ProductOrdered implements Serializable{
 	public void setCnt(Integer cnt) {
 		this.cnt = cnt;
 	}
+
 
 	
 }

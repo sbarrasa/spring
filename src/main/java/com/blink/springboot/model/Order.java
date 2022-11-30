@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -28,14 +30,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "orders")
 public class Order {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator="order_seq")
 	private Long id;
 	
 	@ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
 	private Customer customer;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
-	private Set<ProductOrdered> productsOrdered = new HashSet<>();
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "orderId", cascade = CascadeType.ALL)
+	private Set<ProductOrdered> productsOrdered ;
 
 	@CreationTimestamp
     private LocalDateTime created;

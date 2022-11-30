@@ -4,8 +4,8 @@ import com.blink.springboot.model.Customer;
 
 public class OrdersError extends Error {
 	
-	public OrdersError(Customer customer ) {
-		this(String.format("Customer %d not found", customer.getId()));
+	public OrdersError(Class<?> clazz, Long id) {
+		this(String.format("%s.id: %d not found", clazz.getName(), id));
 	}
 	
 	public OrdersError(String msg) {
