@@ -2,70 +2,95 @@ package com.blink.springboot.model;
 
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 
 
 @Entity
 @Table(name = "orders_products")
-public class ProductOrdered implements Serializable{
-
+public class ProductOrdered implements Serializable {
 	@Id
     @ManyToOne
+	@JsonBackReference
     @JoinColumn(name = "order_id", referencedColumnName = "id", insertable = true, updatable =true)
 	private Order order;
 
-	@JsonBackReference
 	public Order getOrder() {
 		return order;
 	}
 
-	@JsonBackReference
 	public void setOrder(Order order) {
 		this.order = order;
 	}
 
 	@Id
-	@Column(name = "product_id")
-	private Long productId;
+	@OneToOne
+	@JoinColumn(name = "product_id", referencedColumnName = "id", unique = false)
+	private Product product;
+	private Double price=0.0;
+	private Integer cnt=0;
 	
 	
-	public void setProductId(Long productId) {
-		this.productId = productId;
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 	
-	public Long getProductId() {
-		return productId;
+	public Product getProduct() {
+		return product;
 	}
-	
-	private Double price = null;
-	private Integer cnt = 1;
+
+	public static Set<ProductOrdered> buildSet(List<Product> products,
+			Set<ProductOrderedSimple> productsOrderedSimple) {
+		
+		Set<ProductOrdered> productsOrdered = new HashSet<>();
+ 		productsOrderedSimple.forEach(pos -> {
+			ProductOrdered productOrdered = productsOrdered.stream()
+					.filter( po -> po.getProduct().getId().equals(pos.getProductId()))
+					.findFirst().orElse(new ProductOrdered());
+ 			
+ 			productOrdered.setCnt(productOrdered.getCnt()+pos.getCnt());
+ 			productOrdered.setPrice(pos.getPrice());
+ 			
+ 			productOrdered.product = products.stream()
+					.filter( p -> p.getId().equals(pos.getProductId()))
+					.findFirst().orElse(new Product(pos.getProductId()));
+		 	
+ 			productsOrdered.add(productOrdered);
+		});
+ 		
+ 		return productsOrdered;
+	}
 	
 	public Double getPrice() {
 		return price;
 	}
-	
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+
 	public Integer getCnt() {
 		return cnt;
 	}
+	
+	public void setPrice(Double price) {
+		this.price=price;
+	}
+
 	public void setCnt(Integer cnt) {
-		this.cnt = cnt;
+		this.cnt=cnt;
 	}
 
 
-
-	
 }
 

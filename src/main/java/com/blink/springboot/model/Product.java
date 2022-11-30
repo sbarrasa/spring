@@ -28,13 +28,20 @@ public class Product {
 	private Integer stock;
 	private Double price;
 	
+	
 	@CreationTimestamp
     private LocalDateTime created;
  
     @UpdateTimestamp
     private LocalDateTime updated;
 	
-	public Long getId() {
+
+    public Product() {}
+    public Product(Long id) {
+    	setId(id);
+    }
+    
+    public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {

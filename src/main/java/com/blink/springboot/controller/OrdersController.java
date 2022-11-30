@@ -20,6 +20,7 @@ import com.blink.springboot.model.Order;
 import com.blink.springboot.model.OrdersRepository;
 import com.blink.springboot.model.Product;
 import com.blink.springboot.model.ProductOrdered;
+import com.blink.springboot.model.ProductOrderedSimple;
 import com.blink.springboot.model.ProductsRepository;
 
 @RestController
@@ -57,23 +58,21 @@ public class OrdersController {
 	@RequestMapping(path = "/", method = RequestMethod.POST)
 	@Transactional
 	public Order create(@RequestParam Long customer_id,
-						@RequestBody Set<ProductOrdered> productsOrdered ) {
+						@RequestBody Set<ProductOrderedSimple> productsOrderedSimple ) {
 		
 		Customer customer = customersRepository.findById(customer_id)
 				.orElseThrow(() -> new OrdersError(Customer.class, customer_id));
 		
-		Set<Long> productIDs =  productsOrdered.stream()
-										.map(p-> p.getProductId())
-										.collect(Collectors.toSet());
-				
-		List<Product> products = productsRepository.findAllById(productIDs);
+		List<Product> products = productsRepository.findAllById(ProductOrderedSimple.getIds(productsOrderedSimple));
 		
+		Set<ProductOrdered> productsOrdered = ProductOrdered.buildSet(products, productsOrderedSimple);
+	
 		productsOrdered.forEach(po -> {
-			Product product = products.stream()
-					.filter( p -> p.getId().equals(po.getProductId()))
-					.findFirst().orElseThrow(() -> new OrdersError(Product.class, po.getProductId())); 
-
-			if(po.getCnt() > product.getStock())
+			Product product = po.getProduct();
+			if(product.getName() == null)
+				throw new OrdersError(String.format("Product.id: %d doesn't exist", product.getId()));
+			
+			if(product.getStock() != null && po.getCnt() > product.getStock())
 				throw new OrdersError(String.format("There are no suficient stock for product.id: %d (max: %d)",
 										product.getId(),
 										product.getStock())
