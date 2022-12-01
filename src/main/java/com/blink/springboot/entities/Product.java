@@ -1,10 +1,9 @@
-package com.blink.springboot.model;
+package com.blink.springboot.entities;
 
 
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +12,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.blink.springboot.config.Formats;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "products")
@@ -29,10 +31,13 @@ public class Product {
 	private Double price;
 	
 	
+	
 	@CreationTimestamp
-    private LocalDateTime created;
+	@JsonFormat(pattern=Formats.DATE_TIME_MILIS)
+	private LocalDateTime created;
  
     @UpdateTimestamp
+	@JsonFormat(pattern=Formats.DATE_TIME_MILIS)
     private LocalDateTime updated;
 	
 

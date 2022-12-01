@@ -1,4 +1,4 @@
-package com.blink.springboot.model;
+package com.blink.springboot.entities;
 
 public class Specs {
 	private String type;

@@ -1,29 +1,25 @@
-package com.blink.springboot.model;
+package com.blink.springboot.entities;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.Temporal;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.blink.springboot.config.Formats;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 @Entity
@@ -36,13 +32,16 @@ public class Order {
 	@ManyToOne
 	private Customer customer;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
+    @OrderBy("product_id ASC")
 	private Set<ProductOrdered> productsOrdered ;
 
 	@CreationTimestamp
-    private LocalDateTime created;
+	@JsonFormat(pattern=Formats.DATE_TIME_MILIS)
+	private LocalDateTime created;
  
     @UpdateTimestamp
+	@JsonFormat(pattern=Formats.DATE_TIME_MILIS)
     private LocalDateTime updated;
 
     public Order() {}

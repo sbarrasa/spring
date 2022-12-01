@@ -1,6 +1,7 @@
 package com.blink.springboot.controller;
 
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -12,10 +13,9 @@ import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import com.blink.springboot.model.Customer;
+import com.blink.springboot.entities.Customer;
+import com.blink.springboot.entities.Sex;
 import com.blink.springboot.model.CustomersRepository;
-import com.blink.springboot.model.Sex;
 
 @RestController
 @RequestMapping("/customers")
@@ -23,8 +23,7 @@ public class CustomersController {
 
 	@Autowired
 	private CustomersRepository customersRepository;
-	
-			
+
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
 	public Page<Customer> getAll(@RequestParam(required = false) Optional<Integer> page,
 			 				  @RequestParam(required = false) Optional<Integer> size) {

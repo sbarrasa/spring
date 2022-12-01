@@ -1,4 +1,4 @@
-package com.blink.springboot.model;
+package com.blink.springboot.entities;
 
 
 import java.io.Serializable;
@@ -6,17 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 
 
 
@@ -38,8 +34,8 @@ public class ProductOrdered implements Serializable {
 	}
 
 	@Id
-	@OneToOne
-	@JoinColumn(name = "product_id", referencedColumnName = "id", unique = false)
+	@ManyToOne
+	@JoinColumn(name = "product_id", referencedColumnName = "id")
 	private Product product;
 	private Double price=0.0;
 	private Integer cnt=0;

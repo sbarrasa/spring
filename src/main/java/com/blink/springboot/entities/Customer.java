@@ -1,4 +1,4 @@
-package com.blink.springboot.model;
+package com.blink.springboot.entities;
 
 import java.time.LocalDate;
 import java.time.Period;

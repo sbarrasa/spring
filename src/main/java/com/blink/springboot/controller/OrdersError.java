@@ -1,6 +1,6 @@
 package com.blink.springboot.controller;
 
-import com.blink.springboot.model.Customer;
+import com.blink.springboot.entities.Customer;
 
 public class OrdersError extends Error {
 	

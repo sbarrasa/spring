@@ -1,4 +1,4 @@
-package com.blink.springboot.model;
+package com.blink.springboot.entities;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,9 +26,9 @@ public class ProductOrderedSimple {
 		this.price = price;
 	}
 
-	public static Set<Long> getIds(Set<ProductOrderedSimple> productsOrdered) {
-		return productsOrdered.stream()
-				.map(p-> p.getProductId())
+	public static Set<Long> getIds(Set<ProductOrderedSimple> products) {
+		return products.stream()
+				.map(ProductOrderedSimple::getProductId)
 				.collect(Collectors.toSet());
 	}
 	
