@@ -3,6 +3,8 @@ package com.blink.springboot.services;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +23,23 @@ public class OrdersManager {
 	@Autowired
 	public CustomersRepository customersRepository;
 	@Autowired
-	public  ProductsRepository productsRepository;
+	public ProductsRepository productsRepository;
+
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	
 	public Order save(Long customerId, Set<ProductOrdered> productsOrdered) {
+		logger.info("Saving order");
+		
 		Customer customer = customersRepository.findById(customerId)
 				.orElseThrow(() -> new OrdersError(Customer.class, customerId));
-		
-		List<Product> products = productsRepository.findAllById(ProductOrdered.getIds(productsOrdered));
+
+		logger.info("Cutomer #%d: %s".formatted(customer.getId(), customer.getfullName()));
+
+		List<Long> productIds = ProductOrdered.getIds(productsOrdered);
+		logger.info("Binding products %s".formatted(productIds));
+
+		List<Product> products = productsRepository.findAllById(productIds );
 		
 		ProductOrdered.loadProducts(productsOrdered, products);
 	
@@ -49,11 +61,16 @@ public class OrdersManager {
 		
 		
 		Order order = new Order(customer, productsOrdered);
-		
+
+		logger.info("Updating stock %s".formatted(products));
+
 		productsRepository.saveAll(products);
 		
+		ordersRepository.save(order);
 		
-		return ordersRepository.save(order);
+		logger.info("Order #%d saved".formatted(order.getId()));
+		
+		return order ;
 	}
 
 	public Order delete(Long orderId) {

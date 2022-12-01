@@ -21,6 +21,7 @@ import org.hibernate.annotations.TypeDefs;
 
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
@@ -132,6 +133,11 @@ public class Customer {
 		this.specs = specs;
 		return this;
 
+	}
+
+	@JsonIgnore
+	public String getfullName() {
+		return "%s, %s".formatted(getLastNames(), getNames());
 	}
 
 	

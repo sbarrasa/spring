@@ -8,6 +8,9 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,16 +28,15 @@ public class OrdersController {
 	
 			
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
-	@JsonView(Views.Order.class)
-	public List<Order> getAll(@RequestParam(required = false) Optional<Integer> page,
+	public Page<Order> getAll(@RequestParam(required = false) Optional<Integer> page,
 			 				  @RequestParam(required = false) Optional<Integer> size) {
 		
-	return ordersManager.ordersRepository.findAll();	
-		/*return ordersManager.ordersRepository.findAll(PageRequest.of( 
+//	return ordersManager.ordersRepository.findAll();	
+		return ordersManager.ordersRepository.findAll(PageRequest.of( 
 										page.orElse(0), 
 										size.orElse(50),
 										Sort.by("updated")));
-*/
+
 		
 	}
 

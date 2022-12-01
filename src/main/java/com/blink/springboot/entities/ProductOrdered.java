@@ -84,10 +84,10 @@ public class ProductOrdered implements Serializable {
 		this.cnt=cnt;
 	}
 
-	public static Set<Long> getIds(Set<ProductOrdered> products) {
+	public static List<Long> getIds(Set<ProductOrdered> products) {
 		return products.stream()
 				.map(ProductOrdered::getProductId)
-				.collect(Collectors.toSet());
+				.collect(Collectors.toList());
 	}
 
 	public static Set<ProductOrdered> loadProducts(Set<ProductOrdered> productsOrdered, List<Product> products) {

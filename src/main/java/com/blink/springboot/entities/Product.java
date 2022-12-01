@@ -13,9 +13,11 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.blink.springboot.Application;
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Entity
 @Table(name = "products")
@@ -99,5 +101,8 @@ public class Product {
 		this.updated = updated;
 	}
 	
+	public String toString() {
+		return "#%d:(%s) stock:%d price:%,.2f".formatted(getId(), getName(), getStock(), getPrice());
+	}
 	
 }
