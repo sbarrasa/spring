@@ -15,6 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
 @Table(name = "products")
@@ -22,12 +23,21 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Product {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@JsonView(Views.Order.class)
 	private Long id;
+	
 	@Column(nullable = false, length =  50)
+	@JsonView(Views.Order.class)
 	private String name; 
+	
 	@Column(nullable = true, length =  255)
+	@JsonView(Views.Order.class)
 	private String description;
+	
+	@JsonView(Views.Order.class)
 	private Integer stock;
+	
+	@JsonView(Views.Order.class)
 	private Double price;
 	
 	

@@ -1,7 +1,6 @@
 package com.blink.springboot.controller;
 
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -45,10 +44,10 @@ public class CustomersController {
 							  @RequestParam(required = false) Optional<Integer> ageFrom,
 							  @RequestParam(required = false) Optional<Integer> ageTo) {
 		
-		Customer customerQuery = new Customer();
-		customerQuery.setLastNames(lastNames);
-		customerQuery.setNames(names);
-		customerQuery.setSex(sex);
+		Customer customerQuery = new Customer() 
+				.setLastNames(lastNames) 
+				.setNames(names) 
+				.setSex(sex);
 		
 		Example<Customer> example = Example.of(customerQuery, 
 										ExampleMatcher.matching()
@@ -56,15 +55,15 @@ public class CustomersController {
 											.withStringMatcher(StringMatcher.CONTAINING));
 			
 		List<Customer> customers = customersRepository.findAll(
-													example, 
-													Sort.by("lastNames", "names"));
+									example, 
+									Sort.by("lastNames", "names"));
 		
-		customers = customers.stream().filter(customer -> Range.closed(ageFrom.orElse(0),
-																       ageTo.orElse(Integer.MAX_VALUE))
-														       .contains(customer.getAge()))
-										.collect(Collectors.toList());
+		return customers.stream()
+				.filter(customer -> Range.closed(ageFrom.orElse(0),
+			  						         ageTo.orElse(Integer.MAX_VALUE))
+											.contains(customer.getAge()))
+				.collect(Collectors.toList());
 		
-		return customers;
 		
 	}
 

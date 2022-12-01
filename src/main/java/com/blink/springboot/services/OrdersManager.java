@@ -6,7 +6,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.blink.springboot.controller.OrdersError;
 import com.blink.springboot.dao.CustomersRepository;
 import com.blink.springboot.dao.OrdersRepository;
 import com.blink.springboot.dao.ProductsRepository;
@@ -14,7 +13,6 @@ import com.blink.springboot.entities.Customer;
 import com.blink.springboot.entities.Order;
 import com.blink.springboot.entities.Product;
 import com.blink.springboot.entities.ProductOrdered;
-import com.blink.springboot.entities.ProductOrderedSimple;
 
 @Service
 public class OrdersManager {
@@ -25,13 +23,13 @@ public class OrdersManager {
 	@Autowired
 	public  ProductsRepository productsRepository;
 	
-	public Order save(Long customerId, Set<ProductOrderedSimple> productsOrderedSimple) {
+	public Order save(Long customerId, Set<ProductOrdered> productsOrdered) {
 		Customer customer = customersRepository.findById(customerId)
 				.orElseThrow(() -> new OrdersError(Customer.class, customerId));
 		
-		List<Product> products = productsRepository.findAllById(ProductOrderedSimple.getIds(productsOrderedSimple));
+		List<Product> products = productsRepository.findAllById(ProductOrdered.getIds(productsOrdered));
 		
-		Set<ProductOrdered> productsOrdered = ProductOrdered.buildSet(products, productsOrderedSimple);
+		ProductOrdered.loadProducts(productsOrdered, products);
 	
 		productsOrdered.forEach(po -> {
 			Product product = po.getProduct();

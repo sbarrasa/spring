@@ -19,6 +19,9 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
+import com.blink.springboot.config.Formats;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 
@@ -31,17 +34,27 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType;
 public class Customer {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@JsonView(Views.Order.class)
 	private Long id;
+
+	@JsonView(Views.Order.class)
 	private String names;
+
+	@JsonView(Views.Order.class)
 	@Column(name = "lastnames")
 	private String lastNames;
+	
+	@JsonView(Views.Order.class)
 	@Enumerated(EnumType.STRING)
 	private Sex sex;
 	
+	@JsonFormat(pattern=Formats.DATE_VIEW)
 	private LocalDate birthday;
+
 	@Type(type = "jsonb")
     @Column(columnDefinition = "json") 
 	private List<Specs> specs;
+
 	@ElementCollection
 	@CollectionTable(name="childs")
 	private List<Customer> childs;
@@ -53,34 +66,43 @@ public class Customer {
 	public Long getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public Customer setId(Long id) {
 		this.id = id;
+		return this;
+
 	}
+
 	public String getNames() {
 		return names;
 	}
-	public void setNames(String names) {
+	public Customer setNames(String names) {
 		this.names = names;
+		return this;
 	}
 	public String getLastNames() {
 		return lastNames;
 	}
-	public void setLastNames(String lastNames) {
+	public Customer setLastNames(String lastNames) {
 		this.lastNames = lastNames;
+		return this;
 	}
 	public Sex getSex() {
 		return sex;
 	}
-	public void setSex(Sex sex) {
+	public Customer setSex(Sex sex) {
 		this.sex = sex;
+		return this;
+
 	}
 
 	public LocalDate getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(LocalDate birthday) {
+	public Customer setBirthday(LocalDate birthday) {
 		this.birthday = birthday;
+		return this;
+
 	}
 
 
@@ -95,8 +117,10 @@ public class Customer {
 		return childs;
 	}
 
-	public void setChilds(List<Customer> childs) {
+	public Customer setChilds(List<Customer> childs) {
 		this.childs = childs;
+		return this;
+
 	}
 
 	public List<Specs> getSpecs() {
@@ -104,8 +128,10 @@ public class Customer {
 	}
 
 
-	public void setSpecs(List<Specs> specs) {
+	public Customer setSpecs(List<Specs> specs) {
 		this.specs = specs;
+		return this;
+
 	}
 
 	

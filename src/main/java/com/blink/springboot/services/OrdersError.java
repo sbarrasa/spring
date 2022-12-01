@@ -1,4 +1,4 @@
-package com.blink.springboot.controller;
+package com.blink.springboot.services;
 
 import com.blink.springboot.entities.Customer;
 

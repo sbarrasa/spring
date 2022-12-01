@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonView;
 
 
 
@@ -36,40 +38,33 @@ public class ProductOrdered implements Serializable {
 	@Id
 	@ManyToOne
 	@JoinColumn(name = "product_id", referencedColumnName = "id")
+	@JsonView(Views.Order.class)
 	private Product product;
+	@JsonView({Views.Order.class, Views.ProductOrderedRequest.class})
 	private Double price=0.0;
+	@JsonView({Views.Order.class, Views.ProductOrderedRequest.class})
 	private Integer cnt=0;
 	
+	@JsonView(Views.ProductOrderedRequest.class)
+	public Long getProductId() {
+		return getProduct().getId();
+	}
+	
+	@JsonView(Views.ProductOrderedRequest.class)
+	public void setProductId(Long productId) {
+		getProduct().setId(productId);
+	}
 	
 	public void setProduct(Product product) {
 		this.product = product;
 	}
 	
 	public Product getProduct() {
+		if(product== null)
+			product = new Product();
 		return product;
 	}
 
-	public static Set<ProductOrdered> buildSet(List<Product> products,
-			Set<ProductOrderedSimple> productsOrderedSimple) {
-		
-		Set<ProductOrdered> productsOrdered = new HashSet<>();
- 		productsOrderedSimple.forEach(pos -> {
-			ProductOrdered productOrdered = productsOrdered.stream()
-					.filter( po -> po.getProduct().getId().equals(pos.getProductId()))
-					.findFirst().orElse(new ProductOrdered());
- 			
- 			productOrdered.setCnt(productOrdered.getCnt()+pos.getCnt());
- 			productOrdered.setPrice(pos.getPrice());
- 			
- 			productOrdered.product = products.stream()
-					.filter( p -> p.getId().equals(pos.getProductId()))
-					.findFirst().orElse(new Product(pos.getProductId()));
-		 	
- 			productsOrdered.add(productOrdered);
-		});
- 		
- 		return productsOrdered;
-	}
 	
 	public Double getPrice() {
 		return price;
@@ -87,6 +82,23 @@ public class ProductOrdered implements Serializable {
 		this.cnt=cnt;
 	}
 
+	public static Set<Long> getIds(Set<ProductOrdered> products) {
+		return products.stream()
+				.map(ProductOrdered::getProductId)
+				.collect(Collectors.toSet());
+	}
 
+	public static Set<ProductOrdered> loadProducts(Set<ProductOrdered> productsOrdered, List<Product> products) {
+			
+		productsOrdered.forEach(po -> {
+			po.product = products.stream()
+					.filter( p -> p.getId().equals(po.getProductId()))
+					.findFirst().orElse(po.getProduct());
+		 	
+ 		});
+ 		
+ 		return productsOrdered;
+		
+	}
 }
 

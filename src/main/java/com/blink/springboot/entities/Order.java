@@ -13,13 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 
 
 @Entity
@@ -27,21 +27,26 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(Views.Order.class)
 	private Long id;
 	
 	@ManyToOne
+	@JsonView(Views.Order.class)
 	private Customer customer;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
     @OrderBy("product_id ASC")
+	@JsonView(Views.Order.class)
 	private Set<ProductOrdered> productsOrdered ;
 
 	@CreationTimestamp
 	@JsonFormat(pattern=Formats.DATE_TIME_MILIS)
+	@JsonView(Views.Order.class)
 	private LocalDateTime created;
  
     @UpdateTimestamp
 	@JsonFormat(pattern=Formats.DATE_TIME_MILIS)
+	@JsonView(Views.Order.class)
     private LocalDateTime updated;
 
     public Order() {}
@@ -52,8 +57,8 @@ public class Order {
     }
     
 
-	public CustomerSimple getCustomer() {
-		return new CustomerSimple(customer);
+	public Customer getCustomer() {
+		return customer;
 	}
 	
 	
