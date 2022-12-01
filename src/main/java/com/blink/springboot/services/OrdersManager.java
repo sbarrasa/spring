@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.blink.springboot.controller.OrdersError;
+import com.blink.springboot.dao.CustomersRepository;
+import com.blink.springboot.dao.OrdersRepository;
+import com.blink.springboot.dao.ProductsRepository;
 import com.blink.springboot.entities.Customer;
 import com.blink.springboot.entities.Order;
 import com.blink.springboot.entities.Product;
 import com.blink.springboot.entities.ProductOrdered;
 import com.blink.springboot.entities.ProductOrderedSimple;
-import com.blink.springboot.model.CustomersRepository;
-import com.blink.springboot.model.OrdersRepository;
-import com.blink.springboot.model.ProductsRepository;
 
 @Service
 public class OrdersManager {

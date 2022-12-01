@@ -13,9 +13,9 @@ import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.blink.springboot.dao.CustomersRepository;
 import com.blink.springboot.entities.Customer;
 import com.blink.springboot.entities.Sex;
-import com.blink.springboot.model.CustomersRepository;
 
 @RestController
 @RequestMapping("/customers")

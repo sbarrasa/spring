@@ -1,4 +1,4 @@
-package com.blink.springboot.model;
+package com.blink.springboot.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -14,14 +14,14 @@ import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.blink.springboot.dao.CustomersRepository;
+import com.blink.springboot.dao.OrdersRepository;
+import com.blink.springboot.dao.ProductsRepository;
 import com.blink.springboot.entities.Customer;
 import com.blink.springboot.entities.Order;
 import com.blink.springboot.entities.Product;
 import com.blink.springboot.entities.ProductOrdered;
 import com.blink.springboot.entities.ProductOrderedSimple;
-import com.blink.springboot.model.CustomersRepository;
-import com.blink.springboot.model.OrdersRepository;
-import com.blink.springboot.model.ProductsRepository;
 import com.blink.springboot.services.OrdersManager;
 
 @RestController

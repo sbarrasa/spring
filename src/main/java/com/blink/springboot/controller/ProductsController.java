@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blink.springboot.dao.ProductsRepository;
 import com.blink.springboot.entities.Product;
-import com.blink.springboot.model.ProductsRepository;
 
 @RestController
 @RequestMapping("/products")
