@@ -25,23 +25,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class Product {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@JsonView(Views.Order.class)
+	@JsonView({Views.Order.class, Views.ProductUpdate.class})
 	private Long id;
 	
 	@Column(nullable = false, length =  50)
-	@JsonView(Views.Order.class)
+	@JsonView({Views.Order.class, Views.ProductUpdate.class})
 	private String name; 
 	
 	@Column(nullable = true, length =  255)
-	@JsonView(Views.Order.class)
+	@JsonView({Views.Order.class, Views.ProductUpdate.class})
 	private String description;
 	
-	@JsonView(Views.Order.class)
+	@JsonView({Views.Order.class, Views.ProductUpdate.class})
 	private Integer stock;
 	
-	@JsonView(Views.Order.class)
+	@JsonView({Views.Order.class, Views.ProductUpdate.class})
 	private Double price;
-	
 	
 	
 	@CreationTimestamp

@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blink.springboot.dao.ProductsRepository;
 import com.blink.springboot.entities.Product;
+import com.blink.springboot.entities.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 
 @RestController
 @RequestMapping("/products")
@@ -33,32 +35,29 @@ public class ProductsController {
 		return productsRepository.findAll(PageRequest.of( 
 										page.orElse(0), 
 										size.orElse(50),
-										Sort.by("name")));
+										Sort.by("id")));
 
 		
 	}
 	
-	@GetMapping("/sku")
-	public Product getBySku(Long id) {
+	@GetMapping("/{id}")
+	public Product getById(@PathVariable Long id) {
 		return productsRepository.findById(id).orElseThrow();
 	}
 	
-	@RequestMapping(path = "/list", method=RequestMethod.POST)
-	public List<Product> createBatch(@RequestBody List<Product> products) {
-		return productsRepository.saveAll(products);
+	@RequestMapping(path = "/batch", method=RequestMethod.POST)
+	public List<Product> saveBatch(@JsonView(Views.ProductUpdate.class) 
+									@RequestBody List<Product> products) {
+		return productsRepository.updateAll(products);
 	}
 
 	@RequestMapping(path = "/", method=RequestMethod.POST)
-	public Product create(@RequestBody Product product) {
-		return productsRepository.save(product);
+	public Product save(@JsonView(Views.ProductUpdate.class)
+							@RequestBody Product productUpdate) {
+
+		return productsRepository.update(productUpdate);
 	}
 
-	@RequestMapping(path = "/{id}", method=RequestMethod.PUT)
-	public Product update(@PathVariable Long id, @RequestBody Product product) {
-		product.setId(id);
-		
-		return productsRepository.save(product);
-	}
 	
 	@RequestMapping(path = "/{id}", method=RequestMethod.DELETE)
 	public Product delete(@PathVariable Long id) {
