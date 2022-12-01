@@ -34,10 +34,10 @@ public class OrdersManager {
 		Customer customer = customersRepository.findById(customerId)
 				.orElseThrow(() -> new OrdersError(Customer.class, customerId));
 
-		logger.info("Cutomer #%d: %s".formatted(customer.getId(), customer.getfullName()));
+		logger.info("Cutomer #{}: {}", customer.getId(), customer.getfullName());
 
 		List<Long> productIds = ProductOrdered.getIds(productsOrdered);
-		logger.info("Binding products %s".formatted(productIds));
+		logger.info("Binding products {}", productIds);
 
 		List<Product> products = productsRepository.findAllById(productIds );
 		
@@ -45,11 +45,12 @@ public class OrdersManager {
 	
 		productsOrdered.forEach(po -> {
 			Product product = po.getProduct();
-			if(product.getName() == null)
-				throw new OrdersError(String.format("Product.id: %d doesn't exist", product.getId()));
+			
+			if(!product.isLoaded() )
+				throw new OrdersError(String.format("Product.id: {} doesn't exist", product.getId()));
 			
 			if(product.getStock() != null && po.getCnt() > product.getStock())
-				throw new OrdersError(String.format("There are no suficient stock for product.id: %d (max: %d)",
+				throw new OrdersError(String.format("There are no suficient stock for product.id: {} (max: {})",
 										product.getId(),
 										product.getStock())
 									 );
@@ -62,13 +63,13 @@ public class OrdersManager {
 		
 		Order order = new Order(customer, productsOrdered);
 
-		logger.info("Updating stock %s".formatted(products));
+		logger.info("Updating stock {}", products);
 
 		productsRepository.saveAll(products);
 		
 		ordersRepository.save(order);
 		
-		logger.info("Order #%d saved".formatted(order.getId()));
+		logger.info("Order #{} saved", order.getId());
 		
 		return order ;
 	}

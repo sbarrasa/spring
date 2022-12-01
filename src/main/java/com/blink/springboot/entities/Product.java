@@ -9,19 +9,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.blink.springboot.Application;
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 
 @Entity
 @Table(name = "products")
-
 public class Product {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -51,10 +50,17 @@ public class Product {
 	@JsonFormat(pattern=Formats.DATE_TIME_MILIS)
     private LocalDateTime updated;
 	
+    
 
     public Product() {}
+   
     public Product(Long id) {
     	setId(id);
+    }
+
+    
+    public boolean isLoaded() {
+    	return id!=null && name!=null;
     }
     
     public Long getId() {
@@ -101,7 +107,7 @@ public class Product {
 	}
 	
 	public String toString() {
-		return "#%d:(%s) stock:%d price:%,.2f".formatted(getId(), getName(), getStock(), getPrice());
+		return "#%d:%s stock:%d price:%,.2f".formatted(getId(), getName(), getStock(), getPrice());
 	}
 	
 }

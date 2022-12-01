@@ -33,4 +33,7 @@ public interface  ProductsRepository extends JpaRepository<Product, Long>{
 	default public List<Product> updateAll(List<Product> products){
 		return products.stream().map(p -> update(p)).collect(Collectors.toList());
 	}
+	
+	
+	
 }

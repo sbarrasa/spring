@@ -12,6 +12,7 @@ import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.blink.springboot.dao.CustomerRedisRepository;
 import com.blink.springboot.dao.CustomersRepository;
 import com.blink.springboot.entities.Customer;
 import com.blink.springboot.entities.Sex;
@@ -22,6 +23,10 @@ public class CustomersController {
 
 	@Autowired
 	private CustomersRepository customersRepository;
+	
+	@Autowired
+	private CustomerRedisRepository customersRedisRepository;
+	
 
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
 	public Page<Customer> getAll(@RequestParam(required = false) Optional<Integer> page,
@@ -99,5 +104,15 @@ public class CustomersController {
 	public List<Customer> getBySex(@RequestParam Set<Sex> sexs) {
 		return customersRepository.findBySex(sexs);
 	}
+	
+	@GetMapping("/redis/{id}")
+	public Customer saveToRedis(@PathVariable Long id) {
+		Customer customer = customersRepository.findById(id)
+				.orElseThrow();
+		
+		
+		return customersRedisRepository.save(customer);
+	}
+	
 	
 }
