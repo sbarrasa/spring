@@ -40,8 +40,10 @@ public class ProductOrdered implements Serializable {
 	@JoinColumn(name = "product_id", referencedColumnName = "id")
 	@JsonView(Views.Order.class)
 	private Product product;
+	
 	@JsonView({Views.Order.class, Views.ProductOrderedRequest.class})
 	private Double price=0.0;
+	
 	@JsonView({Views.Order.class, Views.ProductOrderedRequest.class})
 	private Integer cnt=0;
 	
