@@ -1,5 +1,6 @@
 package com.blink.springboot.entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -10,15 +11,18 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.EnableCaching;
 
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -33,13 +37,12 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType;
     @TypeDef(name = "json", typeClass = JsonStringType.class),
     @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
-public class Customer {
+public class Customer implements Serializable {
+	private static final long serialVersionUID = 666L;
+
+
 	public Customer() {}
 	
-	
-	public Customer(Customer customerBase) {
-		BeanUtils.copyProperties(customerBase, this);
-	}
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -64,13 +67,10 @@ public class Customer {
     @Column(columnDefinition = "json") 
 	private List<Specs> specs;
 
-	@ElementCollection
+/*	@ElementCollection(fetch = FetchType.LAZY)
 	@CollectionTable(name="childs")
-	private List<Customer> childs;
-	
-
-
-	
+	private List<Customer> childs;*/
+	 	
 	public Long getId() {
 		return id;
 	}
@@ -121,7 +121,7 @@ public class Customer {
 	}
 
 
-	public List<Customer> getChilds() {
+/*	public List<Customer> getChilds() {
 		return childs;
 	}
 
@@ -130,7 +130,7 @@ public class Customer {
 		return this;
 
 	}
-
+*/
 	public List<Specs> getSpecs() {
 		return this.specs;
 	}

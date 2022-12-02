@@ -1,6 +1,8 @@
 package com.blink.springboot.entities;
 
-public class Specs {
+import java.io.Serializable;
+
+public class Specs implements Serializable {
 	private String type;
 	private Integer cnt;
 

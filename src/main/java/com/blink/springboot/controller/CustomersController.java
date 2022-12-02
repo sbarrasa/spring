@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.ResponseEntity;
@@ -77,25 +80,28 @@ public class CustomersController {
 		
 	}
 
+	@Cacheable(value = "Customer")
 	@GetMapping("/{id}")
-	public ResponseEntity<Customer> getById(@PathVariable Long id) {
+	public Customer getById(@PathVariable Long id) {
 		Customer customer = customersRepository.findById(id)
 				.orElseThrow();
-		return ResponseEntity.ok(customer);
+		return customer;
 	}
-	
 
+	@CachePut(value = "Customer")
 	@PostMapping("/")
 	public Customer create(@RequestBody Customer customer) {
 		return customersRepository.save(customer);
 	}
 
+	@CachePut( value = "Customer")
 	@PutMapping("/{id}")
 	public Customer update(@PathVariable Long id, @RequestBody Customer customerUpdate){
 		customerUpdate.setId(id);
 		return customersRepository.save(customerUpdate);
 	}
-	
+
+	@CacheEvict(value = "Customer")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Customer> delete(@PathVariable Long id){
 		Customer customer = customersRepository.findById(id)

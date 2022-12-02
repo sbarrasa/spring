@@ -1,6 +1,7 @@
 package com.blink.springboot.entities;
 
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.index.Indexed;
 
@@ -11,7 +12,7 @@ public class CustomerRedis extends Customer {
 	}
 	
 	public CustomerRedis(Customer customer) {
-		super(customer);
+		BeanUtils.copyProperties(customer, this);
 		customerId = customer.getId();
 	}
 	
@@ -20,7 +21,7 @@ public class CustomerRedis extends Customer {
 	private String redisId;
 	
 	@Indexed
-	private long customerId;
+	private Long customerId;
 	
 	
 	public Long getCustomerId() {
