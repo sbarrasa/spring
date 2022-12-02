@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import com.blink.springboot.dao.CustomerRedisRepository;
 import com.blink.springboot.dao.CustomersRepository;
 import com.blink.springboot.entities.Customer;
+import com.blink.springboot.entities.CustomerRedis;
 import com.blink.springboot.entities.Sex;
 
 @RestController
@@ -28,6 +31,8 @@ public class CustomersController {
 	private CustomerRedisRepository customersRedisRepository;
 	
 
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
 	public Page<Customer> getAll(@RequestParam(required = false) Optional<Integer> page,
 			 				  @RequestParam(required = false) Optional<Integer> size) {
@@ -105,13 +110,24 @@ public class CustomersController {
 		return customersRepository.findBySex(sexs);
 	}
 	
-	@GetMapping("/redis/{id}")
+	@PostMapping("/redis/{id}")
 	public Customer saveToRedis(@PathVariable Long id) {
 		Customer customer = customersRepository.findById(id)
 				.orElseThrow();
 		
-		
-		return customersRedisRepository.save(customer);
+		CustomerRedis customerRedis = new CustomerRedis(customer);
+				
+		return customersRedisRepository.save(customerRedis);
+	}
+	
+	@GetMapping("/redis/all")
+	public Iterable<CustomerRedis> getAllFromRedis() { 
+		return customersRedisRepository.findAll(Sort.by("id"));
+	} 
+	
+	@GetMapping("/redis/{id}")
+	public Customer getFromRedis(@PathVariable Long id) {
+		return customersRedisRepository.findById(id);
 	}
 	
 	

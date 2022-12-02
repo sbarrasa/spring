@@ -34,7 +34,7 @@ public class OrdersManager {
 		Customer customer = customersRepository.findById(customerId)
 				.orElseThrow(() -> new OrdersError(Customer.class, customerId));
 
-		logger.info("Cutomer #{}: {}", customer.getId(), customer.getfullName());
+		logger.info("Cutomer {} loaded", customer);
 
 		List<Long> productIds = ProductOrdered.getIds(productsOrdered);
 		logger.info("Binding products {}", productIds);

@@ -1,24 +1,22 @@
 package com.blink.springboot.dao;
 
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.blink.springboot.entities.Customer;
+import com.blink.springboot.entities.CustomerRedis;
 
 
 @Repository
-public interface CustomerRedisRepository extends CrudRepository<Customer,Long>{
-/*	private RedisTemplate<String, Customer> redis;
-	
-	public CustomerRedisRepository(RedisTemplate<String, Customer> redisTemplate){
-		redis = redisTemplate;
+public interface  CustomerRedisRepository extends JpaRepository<CustomerRedis,String>{
+	default Customer findById(Long id) {
+		return new Customer(findBycustomerId(id).orElseThrow());
 	}
 	
-	 public Customer save(Customer customer) {
-	        redis.opsForHash().put(Customer.class.getSimpleName(), customer.getId(), customer);
-	        return customer;
-	 }
-	*/ 
+	Optional<CustomerRedis> findBycustomerId(Long id);
 }
+

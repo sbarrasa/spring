@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -33,6 +36,13 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType;
     @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 public class Customer {
+	public Customer() {}
+	
+	
+	public Customer(Customer customerBase) {
+		BeanUtils.copyProperties(customerBase, this);
+	}
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@JsonView(Views.Order.class)
@@ -61,7 +71,6 @@ public class Customer {
 	private List<Customer> childs;
 	
 
-	public Customer() {}
 
 	
 	public Long getId() {
@@ -136,10 +145,17 @@ public class Customer {
 	}
 
 	@JsonIgnore
-	public String getfullName() {
+	public String getFullName() {
 		return "%s, %s".formatted(getLastNames(), getNames());
 	}
 
-	
+	@JsonIgnore
+	public String getFullNameAndId() {
+		return "%s (#%d)".formatted(getFullName(), getId());
+	}
+
+	public String toString() {
+		return getFullNameAndId();
+	}
 
 }
