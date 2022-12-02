@@ -20,19 +20,12 @@ public class CustomerRedis extends Customer {
 	private String redisId;
 	
 	@Indexed
-	private Long customerId;
+	private long customerId;
 	
-
-	public String getRedisId() {
-		return redisId;
+	
+	public Long getCustomerId() {
+		return customerId;
 	}
-
-	
-	
-	public void setRedisId(String redisId) {
-		this.redisId = redisId;
-	}
-	
 	
 	
 }

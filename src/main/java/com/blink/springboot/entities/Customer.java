@@ -19,8 +19,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.index.Indexed;
 
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;

@@ -112,12 +112,11 @@ public class CustomersController {
 	
 	@PostMapping("/redis/{id}")
 	public Customer saveToRedis(@PathVariable Long id) {
-		Customer customer = customersRepository.findById(id)
-				.orElseThrow();
-		
-		CustomerRedis customerRedis = new CustomerRedis(customer);
+		CustomerRedis customer = customersRedisRepository.findByCustomerId(id)
+				                     .orElseGet( () -> new CustomerRedis(customersRepository.findById(id)
+				                     .orElseThrow()));
 				
-		return customersRedisRepository.save(customerRedis);
+		return customersRedisRepository.save(customer);
 	}
 	
 	@GetMapping("/redis/all")
@@ -127,7 +126,7 @@ public class CustomersController {
 	
 	@GetMapping("/redis/{id}")
 	public Customer getFromRedis(@PathVariable Long id) {
-		return customersRedisRepository.findById(id);
+		return customersRedisRepository.findByCustomerId(id).orElseThrow();
 	}
 	
 	
