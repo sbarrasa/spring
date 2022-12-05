@@ -80,7 +80,7 @@ public class CustomersController {
 		
 	}
 
-	@Cacheable(value = "Customer")
+	@Cacheable(value =  "Customer", key = "#id")
 	@GetMapping("/{id}")
 	public Customer getById(@PathVariable Long id) {
 		Customer customer = customersRepository.findById(id)
@@ -88,20 +88,20 @@ public class CustomersController {
 		return customer;
 	}
 
-	@CachePut(value = "Customer")
+	@CachePut(value =  "Customer", key = "#id")
 	@PostMapping("/")
 	public Customer create(@RequestBody Customer customer) {
 		return customersRepository.save(customer);
 	}
 
-	@CachePut( value = "Customer")
+	@CachePut(value =  "Customer", key = "#id")
 	@PutMapping("/{id}")
 	public Customer update(@PathVariable Long id, @RequestBody Customer customerUpdate){
 		customerUpdate.setId(id);
-		return customersRepository.save(customerUpdate);
+		return customersRepository.save(customerUpdate);	
 	}
 
-	@CacheEvict(value = "Customer")
+	@CacheEvict(value =  "Customer", key = "#id")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Customer> delete(@PathVariable Long id){
 		Customer customer = customersRepository.findById(id)
