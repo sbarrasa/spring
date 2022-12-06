@@ -67,9 +67,9 @@ public class Customer implements Serializable {
     @Column(columnDefinition = "json") 
 	private List<Specs> specs;
 
-/*	@ElementCollection(fetch = FetchType.LAZY)
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name="childs")
-	private List<Customer> childs;*/
+	private List<Customer> childs;
 	 	
 	public Long getId() {
 		return id;
@@ -121,7 +121,7 @@ public class Customer implements Serializable {
 	}
 
 
-/*	public List<Customer> getChilds() {
+	public List<Customer> getChilds() {
 		return childs;
 	}
 
@@ -130,7 +130,6 @@ public class Customer implements Serializable {
 		return this;
 
 	}
-*/
 	public List<Specs> getSpecs() {
 		return this.specs;
 	}
