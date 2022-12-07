@@ -6,18 +6,22 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.websocket.server.PathParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import com.blink.springboot.dao.CustomerRedisRepository;
 import com.blink.springboot.dao.CustomersRepository;
 import com.blink.springboot.entities.Customer;
 import com.blink.springboot.entities.CustomerRedis;
@@ -26,13 +30,14 @@ import com.blink.springboot.entities.Sex;
 @RestController
 @RequestMapping("/customers")
 public class CustomersController {
-
+	private String server2URI = "http://localhost:8083/customers/";
+	
 	@Autowired
 	private CustomersRepository customersRepository;
 	
-	@Autowired
+/*	@Autowired
 	private CustomerRedisRepository customersRedisRepository;
-	
+*/	
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -117,7 +122,45 @@ public class CustomersController {
 		return customersRepository.findBySex(sexs);
 	}
 	
-	@PostMapping("/redis/{id}")
+	
+	@PostMapping("/spring2/{id}")
+	public CustomerRedis saveServer2Customer(@RequestParam Long id) {
+		Customer customer = customersRepository.findById(id).orElseThrow();
+		return saveServer2Customer(customer);
+		
+	}
+
+	@PutMapping("/spring2/")
+	public CustomerRedis saveServer2Customer(@RequestBody Customer customer) {
+		RestTemplate rest = new RestTemplate(); 
+		CustomerRedis customerResponse = rest.postForObject(server2URI, customer, CustomerRedis.class);
+		
+		return customerResponse;
+		
+	}
+	
+	@GetMapping("/spring2/{id}")
+	public Customer getServer2Customer(@PathParam("id") Long id) {
+		RestTemplate rest = new RestTemplate();
+		CustomerRedis customer = rest.getForObject(server2URI+"{id}", CustomerRedis.class, id);
+		
+		return customer;
+		
+	}
+
+	@GetMapping("/spring2/all")
+	public List<Customer> getServer2CustomerAll() {
+		RestTemplate rest = new RestTemplate();
+		ResponseEntity<List<Customer>> response = rest.exchange(server2URI+"all", 
+																HttpMethod.GET,
+																null, 
+																new ParameterizedTypeReference<List<Customer>>() {});
+		
+		return response.getBody();
+		
+	}
+
+/*	@PostMapping("/redis/{id}")
 	public Customer saveToRedis(@PathVariable Long id) {
 		CustomerRedis customer = customersRedisRepository.findByCustomerId(id)
 				                     .orElseGet( () -> new CustomerRedis(customersRepository.findById(id)
@@ -135,6 +178,6 @@ public class CustomersController {
 	public Customer getFromRedis(@PathVariable Long id) {
 		return customersRedisRepository.findByCustomerId(id).orElseThrow();
 	}
-	
+*/	
 	
 }

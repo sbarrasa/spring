@@ -30,7 +30,7 @@ public class SwaggerConfig implements WebMvcConfigurer{
 
     private ApiInfo apiInfoMetaData() {
 
-        return new ApiInfoBuilder().title("CRUD via REST")
+        return new ApiInfoBuilder().title("Server1")
                 .description("Un ejemplo de CRUD simple usando spring")
                 .contact(new Contact("Sebastián Barrasa", "https://www.cruzagramas.com.ar", "sebastian.barrasa@blink-srl.com"))
                 .license("Apache 2.0")
