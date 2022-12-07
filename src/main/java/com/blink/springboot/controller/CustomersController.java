@@ -66,10 +66,12 @@ public class CustomersController {
 										ExampleMatcher.matching()
 											.withIgnoreCase(true)
 											.withStringMatcher(StringMatcher.CONTAINING));
-			
+		
+		Sort sort = Sort.by("lastNames", "names");
+		
 		List<Customer> customers = customersRepository.findAll(
 									example, 
-									Sort.by("lastNames", "names"));
+									sort);
 		
 		return customers.stream()
 				.filter(customer -> Range.closed(ageFrom.orElse(0),
@@ -88,7 +90,6 @@ public class CustomersController {
 		return customer;
 	}
 
-	@CachePut(value =  "Customer", key = "#id")
 	@PostMapping("/")
 	public Customer create(@RequestBody Customer customer) {
 		return customersRepository.save(customer);

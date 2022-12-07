@@ -23,6 +23,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.lang.Nullable;
 
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -45,7 +46,7 @@ public class Customer implements Serializable {
 	
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@JsonView(Views.Order.class)
 	private Long id;
 
@@ -67,7 +68,7 @@ public class Customer implements Serializable {
     @Column(columnDefinition = "json") 
 	private List<Specs> specs;
 
-	@ElementCollection(fetch = FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.LAZY)
 	@CollectionTable(name="childs")
 	private List<Customer> childs;
 	 	

@@ -28,7 +28,6 @@ public class JedisConfig {
 	  redisConnectionFactory.setDatabase(database);
 	  redisConnectionFactory.setHostName(host);
 	  redisConnectionFactory.setPort(port);
-	  
 	  return redisConnectionFactory;
    
 	}
@@ -37,6 +36,7 @@ public class JedisConfig {
 	public RedisTemplate<String, Object> redisTemplate() {
 	    RedisTemplate<String, Object> template = new RedisTemplate<>();
 	    template.setConnectionFactory(jedisConnectionFactory());
+	    
 	    return template;
 	}
 	
