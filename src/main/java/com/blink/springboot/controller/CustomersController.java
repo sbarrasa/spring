@@ -26,6 +26,7 @@ import com.blink.springboot.dao.CustomersRepository;
 import com.blink.springboot.entities.Customer;
 import com.blink.springboot.entities.CustomerRedis;
 import com.blink.springboot.entities.Sex;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @RestController
 @RequestMapping("/customers")
@@ -40,6 +41,7 @@ public class CustomersController {
 */	
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
 	public Page<Customer> getAll(@RequestParam(required = false) Optional<Integer> page,
@@ -130,7 +132,17 @@ public class CustomersController {
 		
 	}
 
+
+	public String redisErr(Long id) {
+		return "No es posible acceder a la información del customer #%d".formatted(id);
+	}
+
+	public String redisErr(Customer customer) {
+		return "No es posible guardar la información de %s".formatted(customer);
+	}
+	
 	@PutMapping("/spring2/")
+	@HystrixCommand(fallbackMethod = "redisErr")
 	public CustomerRedis saveServer2Customer(@RequestBody Customer customer) {
 		RestTemplate rest = new RestTemplate(); 
 		CustomerRedis customerResponse = rest.postForObject(server2URI, customer, CustomerRedis.class);
@@ -140,6 +152,7 @@ public class CustomersController {
 	}
 	
 	@GetMapping("/spring2/{id}")
+	@HystrixCommand(fallbackMethod = "redisErr")
 	public Customer getServer2Customer(@PathParam("id") Long id) {
 		RestTemplate rest = new RestTemplate();
 		CustomerRedis customer = rest.getForObject(server2URI+"{id}", CustomerRedis.class, id);
@@ -149,6 +162,7 @@ public class CustomersController {
 	}
 
 	@GetMapping("/spring2/all")
+	@HystrixCommand(fallbackMethod = "redisErr")
 	public List<Customer> getServer2CustomerAll() {
 		RestTemplate rest = new RestTemplate();
 		ResponseEntity<List<Customer>> response = rest.exchange(server2URI+"all", 
