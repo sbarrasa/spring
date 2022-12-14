@@ -26,31 +26,41 @@ import com.blink.springboot.dao.CustomersRepository;
 import com.blink.springboot.entities.Customer;
 import com.blink.springboot.entities.CustomerRedis;
 import com.blink.springboot.entities.Sex;
+import com.blink.springboot.services.Server2;
 
 @RestController
 @RequestMapping("/customers")
 public class CustomersController {
-	private String server2URI = "http://localhost:8083/customers/";
+	private final String defaultOrder = "id";
 	
 	@Autowired
 	private CustomersRepository customersRepository;
+
+	@Autowired
+	private Server2 server2 ;
 	
-/*	@Autowired
+
+	 /*	@Autowired
 	private CustomerRedisRepository customersRedisRepository;
 */	
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
+	
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
 	public Page<Customer> getAll(@RequestParam(required = false) Optional<Integer> page,
-			 				  @RequestParam(required = false) Optional<Integer> size) {
+			 				  @RequestParam(required = false) Optional<Integer> size,
+			 				  @RequestParam(required = false, defaultValue = defaultOrder  ) List<String> orderFields) {
 		
-	
+		if(orderFields.isEmpty())
+			orderFields.add(defaultOrder);
 		
 		return customersRepository.findAll(PageRequest.of( 
 										page.orElse(0), 
 										size.orElse(50),
-										Sort.by("lastNames", "names" )));
+										Sort.by(orderFields.toArray(new String[0]))));
+		
+		//								Sort.by("lastNames", "names" )));
 
 		
 	}
@@ -123,40 +133,33 @@ public class CustomersController {
 	}
 	
 	
-	@PostMapping("/spring2/{id}")
+	@PostMapping("/server2/{id}")
 	public CustomerRedis saveServer2Customer(@RequestParam Long id) {
 		Customer customer = customersRepository.findById(id).orElseThrow();
-		return saveServer2Customer(customer);
+		return server2.saveCustomer(customer);
 		
 	}
 
-	@PutMapping("/spring2/")
-	public CustomerRedis saveServer2Customer(@RequestBody Customer customer) {
-		RestTemplate rest = new RestTemplate(); 
-		CustomerRedis customerResponse = rest.postForObject(server2URI, customer, CustomerRedis.class);
+
 		
-		return customerResponse;
+	@PutMapping("/server2/")
+	public CustomerRedis saveServer2Customer(@RequestBody Customer customer) {
+		return server2.saveCustomer(customer);
+		
 		
 	}
 	
-	@GetMapping("/spring2/{id}")
+	@GetMapping("/server2/{id}")
 	public Customer getServer2Customer(@PathParam("id") Long id) {
-		RestTemplate rest = new RestTemplate();
-		CustomerRedis customer = rest.getForObject(server2URI+"{id}", CustomerRedis.class, id);
 		
-		return customer;
+		return server2.getCustomer(id);
 		
 	}
 
-	@GetMapping("/spring2/all")
+	@GetMapping("/server2/all")
+//	@HystrixCommand(fallbackMethod = "redisErr")
 	public List<Customer> getServer2CustomerAll() {
-		RestTemplate rest = new RestTemplate();
-		ResponseEntity<List<Customer>> response = rest.exchange(server2URI+"all", 
-																HttpMethod.GET,
-																null, 
-																new ParameterizedTypeReference<List<Customer>>() {});
-		
-		return response.getBody();
+		return server2.getAll();
 		
 	}
 
