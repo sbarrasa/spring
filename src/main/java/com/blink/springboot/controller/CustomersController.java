@@ -8,19 +8,14 @@ import java.util.stream.Collectors;
 
 import javax.websocket.server.PathParam;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import com.blink.springboot.dao.CustomersRepository;
 import com.blink.springboot.entities.Customer;
@@ -44,7 +39,6 @@ public class CustomersController {
 	private CustomerRedisRepository customersRedisRepository;
 */	
 
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
@@ -141,7 +135,6 @@ public class CustomersController {
 	}
 
 
-		
 	@PutMapping("/server2/")
 	public CustomerRedis saveServer2Customer(@RequestBody Customer customer) {
 		return server2.saveCustomer(customer);
@@ -157,7 +150,6 @@ public class CustomersController {
 	}
 
 	@GetMapping("/server2/all")
-//	@HystrixCommand(fallbackMethod = "redisErr")
 	public List<Customer> getServer2CustomerAll() {
 		return server2.getAll();
 		
