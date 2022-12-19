@@ -8,18 +8,21 @@ import java.util.stream.Collectors;
 
 import javax.websocket.server.PathParam;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import com.blink.springboot.dao.CustomersRepository;
 import com.blink.springboot.entities.Customer;
-import com.blink.springboot.entities.CustomerRedis;
 import com.blink.springboot.entities.Sex;
 import com.blink.springboot.services.Server2;
 
@@ -27,6 +30,12 @@ import com.blink.springboot.services.Server2;
 @RequestMapping("/customers")
 public class CustomersController {
 	private final String defaultOrder = "id";
+
+	@Value("${kafka.topic.name}") 
+	private String kafkaTopic;
+	
+	@Autowired
+	private KafkaTemplate<String, Customer> kafkaTemplate;
 	
 	@Autowired
 	private CustomersRepository customersRepository;
@@ -34,7 +43,8 @@ public class CustomersController {
 	@Autowired
 	private Server2 server2 ;
 	
-
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	 /*	@Autowired
 	private CustomerRedisRepository customersRedisRepository;
 */	
@@ -95,20 +105,27 @@ public class CustomersController {
 	@GetMapping("/{id}")
 	public Customer getById(@PathVariable Long id) {
 		Customer customer = customersRepository.findById(id)
-				.orElseThrow();
+							.orElseThrow();
+		
+		logger.info("Getting customer {}", customer);
+		
 		return customer;
 	}
 
 	@PostMapping("/")
 	public Customer create(@RequestBody Customer customer) {
+		logger.info("Saving customer {}", customer);
+		
 		return customersRepository.save(customer);
 	}
 
 	@CachePut(value =  "Customer", key = "#id")
 	@PutMapping("/{id}")
-	public Customer update(@PathVariable Long id, @RequestBody Customer customerUpdate){
-		customerUpdate.setId(id);
-		return customersRepository.save(customerUpdate);	
+	public Customer update(@PathVariable Long id, @RequestBody Customer customer){
+		customer.setId(id);
+		logger.info("Saving customer {}", customer);
+
+		return customersRepository.save(customer);	
 	}
 
 	@CacheEvict(value =  "Customer", key = "#id")
@@ -116,6 +133,7 @@ public class CustomersController {
 	public ResponseEntity<Customer> delete(@PathVariable Long id){
 		Customer customer = customersRepository.findById(id)
 				.orElseThrow();
+		logger.info("Deleting customer {}", customer);
 		
 		customersRepository.delete(customer);
 		return ResponseEntity.ok(customer);
@@ -126,17 +144,31 @@ public class CustomersController {
 		return customersRepository.findBySex(sexs);
 	}
 	
+	@PutMapping("/kafka/{id}")
+	public Customer putInKafka(@PathVariable Long id){
+		Customer customer = getById(id);
+		
+		return putInKafka(customer);	
+	}
+
+	@PutMapping("/kafka/")
+	public Customer putInKafka(@RequestBody Customer customer){
+		logger.info("Putting custumer {} in kafka topic {}", kafkaTopic, customer);
+
+		kafkaTemplate.send(kafkaTopic, customer);
+		return customer;	
+	}
 	
 	@PostMapping("/server2/{id}")
-	public CustomerRedis saveServer2Customer(@RequestParam Long id) {
-		Customer customer = customersRepository.findById(id).orElseThrow();
+	public Customer saveServer2Customer(@RequestParam Long id) {
+		Customer customer = getById(id);
 		return server2.saveCustomer(customer);
 		
 	}
 
 
 	@PutMapping("/server2/")
-	public CustomerRedis saveServer2Customer(@RequestBody Customer customer) {
+	public Customer saveServer2Customer(@RequestBody Customer customer) {
 		return server2.saveCustomer(customer);
 		
 		
