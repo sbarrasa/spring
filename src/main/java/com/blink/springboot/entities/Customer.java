@@ -73,6 +73,7 @@ public class Customer implements Serializable {
 	public Long getId() {
 		return id;
 	}
+	
 	public Customer setId(Long id) {
 		this.id = id;
 		return this;
