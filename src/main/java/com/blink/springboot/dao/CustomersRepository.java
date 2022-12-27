@@ -18,6 +18,4 @@ public interface CustomersRepository extends JpaRepository<Customer, Long> {
 		+ "WHERE sex in :sexs ")
 	public List<Customer> findBySex(Set<Sex> sexs);
 	
-	public Customer findByName(String name);
-	
 }
