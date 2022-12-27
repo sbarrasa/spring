@@ -70,7 +70,7 @@ public class CustomersController {
 	}
 
 	@GetMapping("/")
-	public List<Customer> get(@RequestParam(required = false)  String lastNames, 
+	public List<Customer> get(@RequestParam(required = false) String lastNames, 
 							  @RequestParam(required = false) String names,
 							  @RequestParam(required = false) Sex sex,
 							  @RequestParam(required = false) Optional<Integer> ageFrom,

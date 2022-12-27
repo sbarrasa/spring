@@ -41,9 +41,7 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType;
 public class Customer implements Serializable {
 	private static final long serialVersionUID = 666L;
 
-
 	public Customer() {}
-	
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)

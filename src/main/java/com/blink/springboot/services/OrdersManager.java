@@ -20,8 +20,10 @@ import com.blink.springboot.entities.ProductOrdered;
 public class OrdersManager {
 	@Autowired
 	public OrdersRepository ordersRepository;
+
 	@Autowired
 	public CustomersRepository customersRepository;
+	
 	@Autowired
 	public ProductsRepository productsRepository;
 

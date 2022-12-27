@@ -11,7 +11,7 @@ import com.blink.springboot.entities.CustomerRedis;
 
 
 @Repository
-public interface  CustomerRedisRepository extends JpaRepository<CustomerRedis,String>{
+public interface CustomerRedisRepository extends JpaRepository<CustomerRedis, String>{
 	Optional<CustomerRedis> findByCustomerId(Long id);
 	
 }

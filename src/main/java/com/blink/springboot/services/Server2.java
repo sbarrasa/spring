@@ -19,12 +19,11 @@ public class Server2 {
  	
  	 private String server2URI = "http://localhost:8083/customers/";
  	 private RestTemplate rest = new RestTemplate();
- 	private Logger logger = LoggerFactory.getLogger(getClass());
+ 	 private Logger logger = LoggerFactory.getLogger(getClass());
 
-	 @CircuitBreaker(name = "SERVER2", fallbackMethod = "circuitFall")
+	 @CircuitBreaker(name = "SERVER2", fallbackMethod = "circuitFall" )
 	 public Customer saveCustomer(Customer customer) {
 		return rest.postForObject(server2URI, customer, Customer.class);
-		
 	 }
 
 

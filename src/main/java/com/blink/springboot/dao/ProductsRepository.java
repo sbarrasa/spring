@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.blink.springboot.entities.Product;
 
+@Repository
 public interface  ProductsRepository extends JpaRepository<Product, Long>{
 	default public Product update(Product productUpdate) {
 		Product product = findById(productUpdate.getId()).orElse(productUpdate);
