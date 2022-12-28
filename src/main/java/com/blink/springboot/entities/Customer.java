@@ -16,14 +16,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.lang.Nullable;
 
 import com.blink.springboot.config.Formats;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -32,16 +28,21 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 
+import lombok.EqualsAndHashCode;
+
+
 @Entity
 @Table(name = "customers")
 @TypeDefs({
     @TypeDef(name = "json", typeClass = JsonStringType.class),
     @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
+
 public class Customer implements Serializable {
 	private static final long serialVersionUID = 666L;
 
 	public Customer() {}
+	
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -110,16 +111,11 @@ public class Customer implements Serializable {
 	public Customer setBirthday(LocalDate birthday) {
 		this.birthday = birthday;
 		return this;
-
 	}
-
-
-
 
 	public Integer getAge() {
 		return Period.between(birthday, LocalDate.now()).getYears();
 	}
-
 
 	public List<Customer> getChilds() {
 		return childs;
@@ -130,6 +126,7 @@ public class Customer implements Serializable {
 		return this;
 
 	}
+
 	public List<Specs> getSpecs() {
 		return this.specs;
 	}
