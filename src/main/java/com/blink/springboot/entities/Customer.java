@@ -117,7 +117,7 @@ public class Customer implements Serializable {
 		return Period.between(birthday, LocalDate.now()).getYears();
 	}
 
-	public List<Customer> getChilds() {
+/*	public List<Customer> getChilds() {
 		return childs;
 	}
 
@@ -126,7 +126,7 @@ public class Customer implements Serializable {
 		return this;
 
 	}
-
+*/
 	public List<Specs> getSpecs() {
 		return this.specs;
 	}
