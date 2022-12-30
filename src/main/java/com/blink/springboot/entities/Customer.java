@@ -28,7 +28,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import com.vladmihalcea.hibernate.type.json.JsonStringType;
 
-import lombok.EqualsAndHashCode;
 
 
 @Entity
@@ -151,5 +150,19 @@ public class Customer implements Serializable {
 	public String toString() {
 		return getFullNameAndId();
 	}
-
+	
+	@Override
+	public boolean equals(Object o) {
+	    // self check
+	    if (this == o) return true;
+	    // null check
+	    if (o == null) return false;
+	    // type check and cast
+	    if (getClass() != o.getClass()) return false;
+	    Customer customer = (Customer) o;
+	    // field comparison
+	    return this.getId().equals(customer.getId())
+	        && this.getNames().equals(customer.getNames())
+	        && this.getLastNames().equals(customer.getLastNames());
+	}
 }
