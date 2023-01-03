@@ -33,6 +33,7 @@ public class CustomersManager {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
+	
 	public List<Customer> get(String lastNames, 
 							  String names,
 							  Sex sex,
@@ -43,6 +44,7 @@ public class CustomersManager {
 				.setNames(names) 
 				.setSex(sex);
 		
+				
 		Example<Customer> example = Example.of(customerQuery, 
 										ExampleMatcher.matching()
 											.withIgnoreCase(true)
@@ -63,7 +65,7 @@ public class CustomersManager {
 	public Customer get(Long id) {
 		Customer customer = customersRepository.findById(id)
 				.orElseThrow();
-
+		
 		logger.info("Getting customer {}", customer);
 
 		return customer;

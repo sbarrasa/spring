@@ -19,6 +19,7 @@ public class JedisConfig {
 	@Value("${spring.redis.database}") Integer database;
 	@Value("${spring.redis.port}") Integer port;
     @Value("${spring.redis.host}") String host;
+	@SuppressWarnings("deprecation")
 	@Bean
     JedisConnectionFactory jedisConnectionFactory() {
 

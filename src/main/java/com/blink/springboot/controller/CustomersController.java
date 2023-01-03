@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -123,12 +125,10 @@ public class CustomersController {
 	public Customer saveServer2Customer(@RequestBody Customer customer) {
 		return server2.saveCustomer(customer);
 		
-		
 	}
 	
 	@GetMapping("/server2/{id}")
 	public Customer getServer2Customer(@PathParam("id") Long id) {
-		
 		return server2.getCustomer(id);
 		
 	}
@@ -139,24 +139,5 @@ public class CustomersController {
 		
 	}
 
-/*	@PostMapping("/redis/{id}")
-	public Customer saveToRedis(@PathVariable Long id) {
-		CustomerRedis customer = customersRedisRepository.findByCustomerId(id)
-				                     .orElseGet( () -> new CustomerRedis(customersRepository.findById(id)
-				                     .orElseThrow()));
-				
-		return customersRedisRepository.save(customer);
-	}
-	
-	@GetMapping("/redis/all")
-	public Iterable<CustomerRedis> getAllFromRedis() { 
-		return customersRedisRepository.findAll(Sort.by("id"));
-	} 
-	
-	@GetMapping("/redis/{id}")
-	public Customer getFromRedis(@PathVariable Long id) {
-		return customersRedisRepository.findByCustomerId(id).orElseThrow();
-	}
-*/	
 	
 }
