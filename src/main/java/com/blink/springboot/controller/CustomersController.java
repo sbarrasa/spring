@@ -3,6 +3,7 @@ package com.blink.springboot.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 import javax.websocket.server.PathParam;
@@ -61,10 +62,18 @@ public class CustomersController {
 	@GetMapping("/show/")
 	public ModelAndView showAll() {
 		ModelAndView mav = new ModelAndView();
+		
+  	  	mav.setViewName("customers");
 
-	    mav.addObject("customers", customersManager.getAll());
-	    mav.setViewName("customers");
-
+		List<Customer> customers = customersManager.getAll();
+		
+		Customer prueba = customers.get(new Random().nextInt(customers.size()-1));
+		Integer money = new Random().nextInt(2000)-1000;
+		mav.addObject( "prueba", prueba);
+		mav.addObject( "money", money);
+		
+		mav.addObject("customers", customers);
+	  
         return mav;
 	}
 	

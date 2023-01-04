@@ -147,6 +147,8 @@ public class Customer implements Serializable {
 		return "%s (#%d)".formatted(getFullName(), getId());
 	}
 
+
+	@Override
 	public String toString() {
 		return getFullNameAndId();
 	}
