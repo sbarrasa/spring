@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -33,7 +32,10 @@ public class CustomersManager {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
-	
+	public List<Customer> getAll(){
+		return customersRepository.findAll();
+	}
+			
 	public List<Customer> get(String lastNames, 
 							  String names,
 							  Sex sex,
@@ -67,7 +69,8 @@ public class CustomersManager {
 				.orElseThrow();
 		
 		logger.info("Getting customer {}", customer);
-
+		
+	
 		return customer;
 	}
 
@@ -81,7 +84,6 @@ public class CustomersManager {
 				Sort.by(orderFields.toArray(new String[0]))));
 	}
 
-	@CachePut(value =  "Customer", key = "#id")
 	public Customer save(Customer customer) {
 		logger.info("Saving customer {}", customer);
 		
@@ -96,7 +98,7 @@ public class CustomersManager {
 		
 	}
 	
-	@CacheEvict(value =  "Customer", key = "#id")
+	@Cacheable(value =  "Customer", key = "#id")
 	public Customer delete(Customer customer) {
 		logger.info("Deleting customer {}", customer);
 		

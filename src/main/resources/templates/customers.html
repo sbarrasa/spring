@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Customers</title>
+</head>
+<body>
+	<h2>Customers</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>name</th>
+				<th>lastName</th>
+				<th>age</th>
+				<th>birthday</th>
+				<th>sex</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="customer : ${customers}">
+				<td th:text="${customer.id}" />
+				<td th:text="${customer.names}" />
+				<td th:text="${customer.lastNames}" />
+				<td th:text="${customer.age}" />
+				<td th:text="${#temporals.format(customer.birthday, 'dd-MM-yyyy')}" />
+				<td th:text="${customer.sex}" />
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

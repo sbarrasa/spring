@@ -1,6 +1,8 @@
 package com.blink.springboot.config;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -20,6 +22,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig implements WebMvcConfigurer{
 
+	@Autowired
+	ApplicationContext applicationContext;
+	
 	@Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2).select()
@@ -30,12 +35,12 @@ public class SwaggerConfig implements WebMvcConfigurer{
 
     private ApiInfo apiInfoMetaData() {
 
-        return new ApiInfoBuilder().title("Server1")
+        return new ApiInfoBuilder().title(applicationContext.getId())
                 .description("Un ejemplo de CRUD simple usando spring")
                 .contact(new Contact("Sebastián Barrasa", "https://www.cruzagramas.com.ar", "sebastian.barrasa@blink-srl.com"))
                 .license("Apache 2.0")
-                .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")
-                .version("1.0.0")
+                .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html") 
+                .version(applicationContext.getEnvironment().getProperty("spring.appliction.version"))
                 .build();
     }
 }

@@ -9,17 +9,20 @@ import javax.websocket.server.PathParam;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.result.view.View;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.blink.springboot.entities.Customer;
 import com.blink.springboot.entities.Sex;
 import com.blink.springboot.services.CustomersManager;
+import com.blink.springboot.services.DemoService;
 import com.blink.springboot.services.Server2;
 
 @RestController
@@ -28,6 +31,9 @@ public class CustomersController {
 
 	@Value("${kafka.topic.name}") 
 	private String kafkaTopic;
+
+	@Autowired
+	private DemoService demo;
 	
 	@Autowired
 	private KafkaTemplate<String, Customer> kafkaTemplate;
@@ -40,6 +46,40 @@ public class CustomersController {
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
+
+
+	@GetMapping("/show/{id}")
+	public ModelAndView show(@PathVariable Long id) {
+		ModelAndView mav = new ModelAndView();
+
+	    mav.addObject("customer", customersManager.get(id));
+	    mav.setViewName("customer");
+
+        return mav;
+	}
+	
+	@GetMapping("/show/")
+	public ModelAndView showAll() {
+		ModelAndView mav = new ModelAndView();
+
+	    mav.addObject("customers", customersManager.getAll());
+	    mav.setViewName("customers");
+
+        return mav;
+	}
+	
+	
+	
+	@PostMapping("/demo")
+	public DemoService setDemo(@RequestBody DemoService demoUpdate) {
+		BeanUtils.copyProperties(demoUpdate, demo);
+		return this.demo;
+	}
+	
+	@GetMapping("/demo")
+	public DemoService getDemo() {
+		return demo;
+	}
 	
 	
 	@RequestMapping(path = "/all", method = RequestMethod.GET)
